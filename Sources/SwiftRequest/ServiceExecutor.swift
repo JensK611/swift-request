@@ -1,6 +1,9 @@
 import Foundation
 
 public protocol ServiceExecutor {
+    var decoder: Decoding { get set }
+    var encoder: Encoding { get set }
+
     func execute(_ request: Request) async throws -> (Data, HTTPURLResponse)
 }
 
@@ -12,7 +15,7 @@ extension ServiceExecutor {
     
     public func callAsFunction<Output: Decodable>(_ request: Request) async throws -> (Output, HTTPURLResponse) {
         let (data, response): (Data, HTTPURLResponse) = try await self.execute(request)
-        let output = try JSONDecoder().decode(Output.self, from: data)
+        let output = try decoder.decode(Output.self, from: data)
         return (output, response)
     }
     

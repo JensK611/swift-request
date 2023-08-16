@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Request {
-    func asURLRequest() throws -> URLRequest {
+    func asURLRequest(encoder: Encoding) throws -> URLRequest {
         let url: URL
         if let queryParams {
             var components = URLComponents(url: self.url, resolvingAgainstBaseURL: false)!
@@ -32,7 +32,7 @@ public extension Request {
             if body is Data {
                 request.httpBody = body as? Data
             } else {
-                request.httpBody = try JSONEncoder().encode(body)
+                request.httpBody = try encoder.encode(body)
             }
         }
         
