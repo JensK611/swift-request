@@ -17,7 +17,7 @@ public class MethodMacro: PeerMacro {
             return []
         }
         
-        if let staticModifier = funcDecl.modifiers?.first(where: {
+        if let staticModifier = funcDecl.modifiers.first(where: {
             $0.name.tokenKind == TokenKind.keyword(.static)
         })?.as(DeclModifierSyntax.self) {
             context.diagnose(diagnostics.nonStaticFunction(node: funcDecl, staticModifier: staticModifier))
@@ -30,7 +30,7 @@ public class MethodMacro: PeerMacro {
             return []
         }
         
-        guard let returnType = funcDecl.signature.output?.returnType else {
+        guard let returnType = funcDecl.signature.returnClause?.type else {
             context.diagnose(diagnostics.outputTypeRequired(node: funcDecl))
             return []
         }
@@ -47,12 +47,12 @@ public class MethodMacro: PeerMacro {
         outputType: TypeSyntax,
         in context: some MacroExpansionContext
     ) -> Bool {
-        if outputType.is(SimpleTypeIdentifierSyntax.self) {
+        if outputType.is(IdentifierTypeSyntax.self) {
             return true
         }
         
         if let arrayType = outputType.as(ArrayTypeSyntax.self) {
-            return validate(outputType: arrayType.elementType, in: context)
+            return validate(outputType: arrayType.element, in: context)
         }
         
         guard let tupleSyntax = outputType.as(TupleTypeSyntax.self),

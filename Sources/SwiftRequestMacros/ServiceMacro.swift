@@ -18,7 +18,7 @@ public struct ServiceMacro: PeerMacro {
             return []
         }
         
-        let resource = node.argument?.as(TupleExprElementListSyntax.self)?.first?.as(TupleExprElementSyntax.self)?.expression
+        let resource = node.arguments?.as(LabeledExprListSyntax.self)?.first?.as(LabeledExprSyntax.self)?.expression
         
         let declarations = protocolDecl.memberBlock.members
             .compactMap { $0.decl.as(FunctionDeclSyntax.self) }
@@ -47,7 +47,7 @@ public struct ServiceMacro: PeerMacro {
         in context: some MacroExpansionContext
     ) -> FunctionDeclSyntax? {
         // TODO: require method
-        guard let method = declaration.attributes?.first?.as(AttributeSyntax.self)?.attributeName.description else {
+        guard let method = declaration.attributes.first?.as(AttributeSyntax.self)?.attributeName.description else {
             context.diagnose(diagnostics.methodRequired(node: declaration))
             return nil
         }
@@ -68,6 +68,6 @@ public struct ServiceMacro: PeerMacro {
             return nil
         }
         
-        return protocolDecl.identifier.text
+        return protocolDecl.name.text
     }
 }

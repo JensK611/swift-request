@@ -11,8 +11,8 @@ class FunctionParameter {
         self.optional = syntax.type.as(OptionalTypeSyntax.self) != nil
     }
     
-    static func getArguments(from syntax: FunctionParameterSyntax) -> TupleExprElementListSyntax? {
-        return syntax.attributes?.first?.as(AttributeSyntax.self)?.argument?.as(TupleExprElementListSyntax.self)
+    static func getArguments(from syntax: FunctionParameterSyntax) -> LabeledExprListSyntax? {
+        return syntax.attributes.first?.as(AttributeSyntax.self)?.arguments?.as(LabeledExprListSyntax.self)
     }
 }
 
